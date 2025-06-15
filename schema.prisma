@@ -6,3 +6,46 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Student {
+  id          Int       @id @default(cuid()) @map("student_id")
+  name        String    
+  dob         Date   
+  gender      String    @db.VarChar(1)
+  rollno      String    
+  regno       Int
+  dept        String
+  batch       String   
+  cur_year    Int
+  semester    Int  
+  email       String
+  password    String
+
+  @@map("student")
+}
+
+model Parent {
+  id               Int       @id @default(cuid()) @map("parent_id")
+  father_name      String    
+  mother_name      String  
+  father_work      String
+  mother_work      String    
+  father_income    Int
+  mother_income    String
+  contact          String[]
+  email            String
+  password         String
+  student          Student[]
+
+  @@map("parent")
+}
+
+model Courses {
+  id          Int       @id @default(cuid()) @map("course_id")
+  code        String    
+  name        String 
+  semester    Int
+  credits     Int    
+
+  @@map("courses")
+}
