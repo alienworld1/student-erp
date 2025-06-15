@@ -31,7 +31,7 @@ model Parent {
   father_work      String
   mother_work      String    
   father_income    Int
-  mother_income    String
+  mother_income    Int
   contact          String[]
   email            String
   password         String
