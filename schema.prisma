@@ -8,24 +8,26 @@ datasource db {
 }
 
 model Student {
-  id          Int       @id @default(cuid()) @map("student_id")
+  id          String       @id @default(cuid()) @map("student_id")
   name        String    
   dob         Date   
-  gender      String    @db.VarChar(1)
-  rollno      String    
-  regno       Int
+  gender      String       @db.VarChar(1)
+  rollno      String       @unique
+  regno       Int          @unique
   dept        String
   batch       String   
-  cur_year    Int
+  year        Int
   semester    Int  
-  email       String
+  email       String       @unique
   password    String
+  attendance  Attendance[]
+  uploads     Upload[]
 
   @@map("student")
 }
 
 model Parent {
-  id               Int       @id @default(cuid()) @map("parent_id")
+  id               String       @id @default(cuid()) @map("parent_id")
   father_name      String    
   mother_name      String  
   father_work      String
@@ -33,19 +35,81 @@ model Parent {
   father_income    Int
   mother_income    Int
   contact          String[]
-  email            String
+  email            String       @unique
   password         String
-  student          Student[]
+  students         Student[]
 
   @@map("parent")
 }
 
+model Staff {
+  id              String          @id @default(cuid()) @map("staff_id")
+  name            String
+  email           String          @unique
+  password        String
+  assignments     Assignments[]
+  announcements   Announcements[]
+  uploads         Upload[]
+
+  @@map("staff")
+}
+
+model Assignments {
+  id        String   @id @default(cuid()) @map("assign_id")
+  staff_id  String   @map("staff_id")
+  course_id String   @map("course_id")
+  batch     String
+  dept      String
+  staff     Staff    @relation(fields: [staff_id], references: [id])
+  course    Courses  @relation(fields: [course_id], references: [id])
+
+  @@unique([staff_id, course_id, batch, dept])
+  @@map("assignments")
+}
+
 model Courses {
-  id          Int       @id @default(cuid()) @map("course_id")
-  code        String    
+  id          String        @id @default(cuid()) @map("course_id")
+  code        String        @unique
   name        String 
   semester    Int
-  credits     Int    
+  credits     Int
+  assignments Assignments[]
+  attendance  Attendance[]
 
   @@map("courses")
+}
+
+model Attendance {
+  id         String   @id @default(cuid())
+  student_id String   @map("student_id")
+  status     Boolean
+  date       DateTime
+  period     Int
+  student    Student  @relation(fields: [student_id], references: [id])
+
+  @@unique([student_id, date, period])
+  @@map("attendance")
+}
+
+model Announcements {
+  id       String   @id @default(cuid())
+  staff_id String   @map("staff_id")
+  message  String   @db.Text
+  date     DateTime @default(now())
+  staff    Staff    @relation(fields: [staff_id], references: [id])
+
+  @@map("announcements")
+}
+
+model Upload {
+  id         String  @id @default(cuid())
+  student_id String  @map("student_id")
+  staff_id   String  @map("staff_id")
+  course_id  String  @map("course_id")
+  marks      Json
+  student    Student @relation(fields: [student_id], references: [id])
+  staff      Staff   @relation(fields: [staff_id], references: [id])
+  course     Courses @relation(fields: [course_id], references: [id])
+
+  @@map("upload")
 }
