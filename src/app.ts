@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import router from './routes';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -6,13 +7,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req: Request, res: Response) => {
-  res.json({
-    message: 'Welcome to Student ERP API',
-    status: 'Server is running successfully!',
-    timestamp: new Date().toISOString()
-  });
-});
+app.use('/api', router);
 
 app.use('*', (req: Request, res: Response) => {
   res.status(404).json({

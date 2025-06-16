@@ -5,63 +5,66 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Student {
-  id          String       @id @default(cuid()) @map("student_id")
-  name        String    
-  dob         Date   
-  gender      String       @db.VarChar(1)
-  rollno      String       @unique
-  regno       Int          @unique
-  dept        String
-  batch       String   
-  year        Int
-  semester    Int  
-  email       String       @unique
-  password    String
-  attendance  Attendance[]
-  uploads     Upload[]
+  id         String       @id @default(cuid()) @map("student_id")
+  name       String
+  dob        DateTime
+  gender     String       @db.VarChar(1)
+  rollno     String       @unique
+  regno      Int          @unique
+  dept       String
+  batch      String
+  year       Int
+  semester   Int
+  email      String       @unique
+  password   String
+  attendance Attendance[]
+  uploads    Upload[]
+  Parent     Parent?      @relation(fields: [parentId], references: [id])
+  parentId   String?
 
   @@map("student")
 }
 
 model Parent {
-  id               String       @id @default(cuid()) @map("parent_id")
-  father_name      String    
-  mother_name      String  
-  father_work      String
-  mother_work      String    
-  father_income    Int
-  mother_income    Int
-  contact          String[]
-  email            String       @unique
-  password         String
-  students         Student[]
+  id            String    @id @default(cuid()) @map("parent_id")
+  father_name   String
+  mother_name   String
+  father_work   String
+  mother_work   String
+  father_income Int
+  mother_income Int
+  contact       String[]
+  email         String    @unique
+  password      String
+  students      Student[]
 
   @@map("parent")
 }
 
 model Staff {
-  id              String          @id @default(cuid()) @map("staff_id")
-  name            String
-  email           String          @unique
-  password        String
-  assignments     Assignments[]
-  announcements   Announcements[]
-  uploads         Upload[]
+  id            String          @id @default(cuid()) @map("staff_id")
+  name          String
+  email         String          @unique
+  password      String
+  assignments   Assignments[]
+  announcements Announcements[]
+  uploads       Upload[]
 
   @@map("staff")
 }
 
 model Assignments {
-  id        String   @id @default(cuid()) @map("assign_id")
-  staff_id  String   @map("staff_id")
-  course_id String   @map("course_id")
+  id        String  @id @default(cuid()) @map("assign_id")
+  staff_id  String  @map("staff_id")
+  course_id String  @map("course_id")
   batch     String
   dept      String
-  staff     Staff    @relation(fields: [staff_id], references: [id])
-  course    Courses  @relation(fields: [course_id], references: [id])
+  staff     Staff   @relation(fields: [staff_id], references: [id])
+  course    Courses @relation(fields: [course_id], references: [id])
 
   @@unique([staff_id, course_id, batch, dept])
   @@map("assignments")
@@ -70,11 +73,12 @@ model Assignments {
 model Courses {
   id          String        @id @default(cuid()) @map("course_id")
   code        String        @unique
-  name        String 
+  name        String
   semester    Int
   credits     Int
   assignments Assignments[]
   attendance  Attendance[]
+  Upload      Upload[]
 
   @@map("courses")
 }
@@ -86,6 +90,8 @@ model Attendance {
   date       DateTime
   period     Int
   student    Student  @relation(fields: [student_id], references: [id])
+  Courses    Courses? @relation(fields: [coursesId], references: [id])
+  coursesId  String?
 
   @@unique([student_id, date, period])
   @@map("attendance")
