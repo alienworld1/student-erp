@@ -1,8 +1,14 @@
 import { Router } from 'express';
-import { fetchAllStudents } from '../controllers/student';
+import {
+  fetchAllStudents,
+  fetchStudentById,
+  createStudent,
+} from '../controllers/student';
 
 const studentRouter = Router();
 
 studentRouter.get('/', fetchAllStudents);
+studentRouter.get('/:id', fetchStudentById);
+studentRouter.post('/', createStudent);
 
 export default studentRouter;

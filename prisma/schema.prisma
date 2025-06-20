@@ -8,47 +8,48 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum AdmissionMode {
-  Management
-  Counseling
-}
-
-enum StudentType {
-  Hostel
-  DayScholar
-}
-
-enum StudentMode {
-  Regular
-  LateralEntry
-  Transfer
-}
-
 model Student {
-  id              String        @id @default(cuid()) @map("student_id")
-  name            String
-  dob             DateTime
-  gender          String        @db.VarChar(1)
-  rollno          String        @unique
-  regno           Int           @unique
-  dept            String
-  batch           String
-  year            Int
-  semester        Int
-  email           String        @unique
-  password        String
-  attendance      Attendance[]
-  uploads         Upload[]
-  Parent          Parent?       @relation(fields: [parentId], references: [id])
-  parentId        String?
-  studentType     StudentType
-  dateOfJoining   DateTime
-  modeOfAdmission AdmissionMode
-  mode            StudentMode
-  bloodGroup      String?
-  motherTongue    String?
-  nativePlace     String?
-  nationality     String?
+  id                        String       @id @default(cuid()) @map("student_id")
+  name                      String
+  //figure out a way to store student photos
+  photoUrl                  String?
+  rollno                    String       @unique
+  regno                     Int          @unique
+  enrollmentMode            String
+  applicationMode           String
+  branch                    String
+  email                     String       @unique
+  mobileNumber              String
+  dateOfBirth               DateTime
+  totalMarks                Int
+  overallPercentage         Float
+  cutoffMarks               Int
+  dateOfJoining             DateTime
+  accommodationStatus       String
+  firstGraduate             Boolean
+  state                     String
+  religion                  String
+  catholicParish            String?
+  isDalitCatholic           Boolean
+  Community                 String
+  subCaste                  String
+  gender                    String       @db.VarChar(1)
+  motherTongue              String
+  nativePlace               String
+  nationality               String
+  bloodGroup                String
+  department                String
+  batch                     String
+  currentYear               Int
+  currentSemester           Int
+  address                   String
+  coCurricularActivities    String[]
+  extracurricularActivities String[]
+  password                  String
+  attendance                Attendance[]
+  uploads                   Upload[]
+  Parent                    Parent?      @relation(fields: [parentId], references: [id])
+  parentId                  String?
 
   @@map("student")
 }
