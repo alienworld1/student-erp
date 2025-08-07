@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import prisma from '../utils/prisma';
 import * as bcrypt from 'bcrypt';
+import * as z from 'zod/v4';
 
 import { StudentSchema } from '../schema/student';
 
@@ -73,4 +74,34 @@ export const createStudent = asyncHandler(async (req, res) => {
   });
 
   res.status(201).json(newStudent);
+});
+
+export const addParent = asyncHandler(async (req, res) => {
+  const parentId = req.query.parentId;
+  const studentId = req.params.id;
+
+  if (!parentId || typeof parentId !== 'string') {
+    res
+      .status(400)
+      .json({ message: 'Parent ID is required as query parameter' });
+    return;
+  }
+
+  const studentExists = await prisma.student.findUnique({
+    where: { id: studentId },
+  });
+
+  if (!studentExists) {
+    res.status(404).json({ message: 'Student not found' });
+    return;
+  }
+
+  await prisma.student.update({
+    where: { id: studentId },
+    data: {
+      parentId,
+    },
+  });
+
+  res.status(201).json({ message: 'Parent added successfully' });
 });
