@@ -25,7 +25,7 @@ export const fetchParentById = asyncHandler(async (req, res) => {
 });
 
 export const createParent = asyncHandler(async (req, res) => {
-  const parent = ParentSchema.safeParse(req.body);
+  const parent = await ParentSchema.safeParseAsync(req.body);
 
   if (!parent.success) {
     res.status(400).json({ issues: parent.error.issues });

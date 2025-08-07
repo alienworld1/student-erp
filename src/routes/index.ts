@@ -1,9 +1,11 @@
 import { Router, Request, Response } from 'express';
 import studentRouter from './students';
+import parentRouter from './parents';
 
 const router = Router();
 
 router.use('/students', studentRouter);
+router.use('/parents', parentRouter);
 
 router.get('/', (request: Request, response: Response) => {
   response.json({
