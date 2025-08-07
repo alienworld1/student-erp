@@ -3,6 +3,7 @@ import prisma from '../utils/prisma';
 import * as bcrypt from 'bcrypt';
 
 import { ParentSchema } from '../schema/parent';
+import { addParent } from '../services/parent';
 
 export const fetchAllParents = asyncHandler(async (req, res) => {
   const parents = await prisma.parent.findMany();
@@ -36,7 +37,7 @@ export const createParent = asyncHandler(async (req, res) => {
   const newParent = await prisma.parent.create({
     data: {
       students: {
-        connect: { id: parent.data.studentid.toString() }
+        connect: { id: parent.data.studentid },
       },
       password: hashedPassword,
       father_name: parent.data.fatherName,
@@ -44,12 +45,13 @@ export const createParent = asyncHandler(async (req, res) => {
       father_work: parent.data.fatherOccupation,
       mother_work: parent.data.motherOccupation,
       father_income: parent.data.fatherIncome,
-      mother_income: parent.data.motherIncome,      
+      mother_income: parent.data.motherIncome,
       email: parent.data.parentEmail,
       contact: [parent.data.parentMobileNumber],
-        
     },
   });
+
+  addParent(newParent.id, parent.data.studentid);
 
   res.status(201).json(newParent);
 });

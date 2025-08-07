@@ -1,7 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import prisma from '../utils/prisma';
 import * as bcrypt from 'bcrypt';
-import * as z from 'zod/v4';
 
 import { StudentSchema } from '../schema/student';
 

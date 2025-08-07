@@ -12,7 +12,8 @@ studentRouter.get('/', fetchAllStudents);
 studentRouter.get('/:id', fetchStudentById);
 
 // parentId is expected as a query parameter
-studentRouter.post('/:id/parent', addParent);
+// this route isn't needed right now
+// studentRouter.post('/:id/parent', addParent);
 
 studentRouter.post('/', createStudent);
 
