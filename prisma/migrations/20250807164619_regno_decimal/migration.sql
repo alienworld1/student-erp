@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "student" ALTER COLUMN "regno" SET DATA TYPE DECIMAL(12,0);

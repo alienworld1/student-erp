@@ -6,7 +6,7 @@ const largestRegNumber = 999_999_999_999;
 const Student = z.object({
   name: z.string().min(1, 'Name is required'),
   rollno: z.string().min(1, 'Roll number is required'),
-  regno: z.int().gte(smallestRegNumber).lte(largestRegNumber),
+  regno: z.number().gte(smallestRegNumber).lte(largestRegNumber),
   enrollmentMode: z.enum(['Regular', 'Lateral Entry', 'Transfer']),
   applicationMode: z.enum(['Management', 'Counseling']),
   branch: z.string().min(1, 'Branch is required'),
