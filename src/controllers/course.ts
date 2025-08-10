@@ -3,7 +3,7 @@ import prisma from '../utils/prisma';
 import * as bcrypt from 'bcrypt';
 
 import { CourseSchema } from '../schema/course';
-import { addCourse } from '../services/course';
+import { fetchCourseByCode } from '../utils/courses';
 
 export const fetchAllCourses = asyncHandler(async (req, res) => {
   const courses = await prisma.courses.findMany();
@@ -25,23 +25,28 @@ export const fetchCourseById = asyncHandler(async (req, res) => {
 });
 
 export const createCourse = asyncHandler(async (req, res) => {
-    const course = CourseSchema.safeParse(req.body);
+  const course = CourseSchema.safeParse(req.body);
 
-    if (!course.success) {
-        res.status(400).json({ issues: course.error.issues });
-        return;
-    }
-    const newCourse = await prisma.courses.create({
-        data: {
-            id: String(course.data.courseid),
-            name: course.data.coursename,
-            code: course.data.coursecode,
-            semester: course.data.semester,
-            credits: course.data.credits,
-        },
-    });
+  if (!course.success) {
+    res.status(400).json({ issues: course.error.issues });
+    return;
+  }
 
-    addCourse(Number(newCourse.id), course.data.courseid);
+  const existingCourse = await fetchCourseByCode(course.data.coursecode);
 
-    res.status(201).json(newCourse);
-})
+  if (existingCourse) {
+    res.status(400).json({ message: 'Course code already exists' });
+    return;
+  }
+
+  const newCourse = await prisma.courses.create({
+    data: {
+      code: course.data.coursecode,
+      name: course.data.coursename,
+      semester: course.data.semester,
+      credits: course.data.credits,
+    },
+  });
+
+  res.status(201).json(newCourse);
+});
