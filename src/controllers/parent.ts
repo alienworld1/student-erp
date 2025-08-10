@@ -3,7 +3,7 @@ import prisma from '../utils/prisma';
 import * as bcrypt from 'bcrypt';
 
 import { ParentSchema } from '../schema/parent';
-import { addParent } from '../services/parent';
+import { addParent } from '../utils/parent';
 
 export const fetchAllParents = asyncHandler(async (req, res) => {
   const parents = await prisma.parent.findMany();
